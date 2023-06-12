@@ -34,7 +34,7 @@ public class DirectionsApiClient {
     }
 
     private String buildDirectionsApiUrl(LatLng origin, LatLng destination) {
-        String apiKey = "AIzaSyDvgG9_ldNWvY0Or4e3Iy4WQUd_AWIrV5c"; // Substitua pela sua chave de API do Google Maps
+        String apiKey = "AIzaSyDvgG9_ldNWvY0Or4e3Iy4WQUd_AWIrV5c";
 
         String baseUrl = "https://maps.googleapis.com/maps/api/directions/json?";
         String originParam = "origin=" + origin.latitude + "," + origin.longitude;
