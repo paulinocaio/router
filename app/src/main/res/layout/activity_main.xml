@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:apiKey="AIzaSyDvgG9_ldNWvY0Or4e3Iy4WQUd_AWIrV5c"
+        android:clickable="true"
+        android:enabled="true" />
+
+    <TextView
+        android:id="@+id/textViewAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/font"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="ROUTER"
+        android:textColor="#8A2BE2"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="35dp"
+        android:layout_height="37dp"
+        android:layout_alignStart="@id/textViewAppName"
+        android:layout_marginStart="-20dp"
+        android:layout_marginTop="13dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textViewLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editTextDestination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/seu_destino"
+        android:layout_above="@id/textViewLocation"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="2dp"
+        android:paddingStart="16dp"
+        android:background="@drawable/custom_edittext_background"
+        tools:ignore="RtlSymmetry" />
+
+
+    <EditText
+        android:id="@+id/editTextDeparture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/seu_ponto_de_partida"
+        android:layout_above="@id/editTextDestination"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="2dp"
+        android:paddingStart="16dp"
+        android:background="@drawable/custom_edittext_background"
+        tools:ignore="RtlSymmetry" />
+
+    <Button
+        android:id="@+id/buttonRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="144dp"
+        android:layout_marginBottom="6dp"
+        android:text="@string/tra_ar_rota" />
+
+
+    <TextView
+        android:id="@+id/textViewDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/editTextDeparture"
+        android:layout_marginEnd="144dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/custom_edittext_background2"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:text="Distância: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/textViewDistance"
+        android:layout_marginEnd="144dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/custom_edittext_background2"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:text="Velocidade Ideal: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/textViewSpeed"
+        android:layout_marginEnd="144dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/custom_edittext_background2"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:text="Tempo Estimado: "
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/editTextDeparture"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:text="Mudar Veículo"
+        android:textSize="10sp" />
+
+</RelativeLayout>
+

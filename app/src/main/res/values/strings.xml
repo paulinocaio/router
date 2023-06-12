@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">MainActivity</string>
+    <string name="seu_destino">Seu Destino</string>
+    <string name="seu_ponto_de_partida">Seu Ponto de Partida</string>
+    <string name="tra_ar_rota">Traçar Rota</string>
+</resources>

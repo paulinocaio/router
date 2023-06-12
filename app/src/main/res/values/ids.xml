@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="editTextDestination" type="id" />
+    <item name="textViewAppName" type="id" />
+    <item name="imageView" type="id" />
+    <item name="textViewLocation" type="id" />
+    <item name="editTextDeparture" type="id" />
+    <item name="buttonRoute" type="id" />
+</resources>
