@@ -3,4 +3,6 @@
     <string name="seu_destino">Seu Destino</string>
     <string name="seu_ponto_de_partida">Seu Ponto de Partida</string>
     <string name="tra_ar_rota">Traçar Rota</string>
+    <string name="router">ROUTER</string>
+    <string name="mudar_veiculo">Mudar Veículo</string>
 </resources>

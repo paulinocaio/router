@@ -1,15 +1,22 @@
 package com.example.mainactivity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -22,18 +29,20 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private List<LatLng> routePoints;
     private MapView mapView;
     private GoogleMap googleMap;
     private EditText editTextDeparture;
     private EditText editTextDestination;
     private Polyline routePolyline;
+    private Veiculo currentVeiculo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +55,66 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         editTextDeparture = findViewById(R.id.editTextDeparture);
         editTextDestination = findViewById(R.id.editTextDestination);
-        Button buttonRoute = findViewById(R.id.buttonRoute);
 
+        currentVeiculo = new Carro();
+
+        editTextDeparture.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    String departure = editTextDeparture.getText().toString();
+                    addMarkers(departure, "");
+                    hideKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextDestination.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    String destination = editTextDestination.getText().toString();
+                    addMarkers("", destination);
+                    hideKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextDeparture.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        editTextDeparture.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    String departure = editTextDeparture.getText().toString().trim();
+                    addMarkers(departure, "");
+                    editTextDeparture.clearFocus();
+                    hideKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        editTextDestination.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        editTextDestination.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    String destination = editTextDestination.getText().toString().trim();
+                    addMarkers("", destination);
+                    editTextDestination.clearFocus();
+                    hideKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Button buttonRoute = findViewById(R.id.buttonRoute);
         buttonRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,15 +122,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String destination = editTextDestination.getText().toString();
 
                 if (!departure.isEmpty() && !destination.isEmpty()) {
-                    addMarkers(departure, destination);
-                    drawRoute(departure, destination);
+                    startSimulation(departure, destination);
                 } else {
                     Toast.makeText(MainActivity.this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        Button buttonChangeVeiculo = findViewById(R.id.buttonMudarVeiculo);
+        buttonChangeVeiculo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeVeiculo();
+            }
+        });
 
+        Button buttonGetInfo = findViewById(R.id.buttonGetInfo);
+        buttonGetInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showVehicleInfo(currentVeiculo);
+            }
+        });
+    }
+
+    private void startSimulation(String departure, String destination) {
+        addMarkers(departure, destination);
+        drawRoute(departure, destination);
     }
 
     private void addMarkers(String departure, String destination) {
@@ -81,17 +166,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             builder.include(destinationLatLng);
             LatLngBounds bounds = builder.build();
 
-            int padding = 100;
+            int padding = 60;
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 
             googleMap.animateCamera(cameraUpdate);
-            getRouteInformation(departureLatLng, destinationLatLng);
         } else {
             Toast.makeText(MainActivity.this, "Falha ao obter as coordenadas.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void drawRoute(String departure, String destination) {
+        routePoints = new ArrayList<>();
         LatLng departureLatLng = getLatLngFromAddress(departure);
         LatLng destinationLatLng = getLatLngFromAddress(destination);
 
@@ -110,6 +195,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .color(com.google.android.libraries.places.R.color.quantum_purple);
 
                     routePolyline = googleMap.addPolyline(polylineOptions);
+
+                    // Atualizar a lista routePoints com os pontos da rota
+                    routePoints.addAll(points);
+
+                    LocationThread locationThread = new LocationThread(routePoints, googleMap, currentVeiculo);
+                    locationThread.start();
                 }
 
                 @Override
@@ -117,7 +208,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Toast.makeText(MainActivity.this, "Falha ao obter a rota: " + errorMessage, Toast.LENGTH_SHORT).show();
                 }
             });
-        } else {
+        }
+
+        else {
             Toast.makeText(MainActivity.this, "Falha ao obter as coordenadas.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -139,33 +232,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         return null;
-    }
-
-    private void getRouteInformation(LatLng origin, LatLng destination) {
-        DirectionsApiClient directionsApiClient = new DirectionsApiClient();
-        directionsApiClient.getDirections(origin, destination, new DirectionsApiClient.DirectionsApiCallback() {
-            @Override
-            public void onDirectionsReady(List<LatLng> points) {
-                double distance = calculateDistance(points);
-
-                double speed = calculateSpeed(distance);
-
-                double duration = calculateDuration(distance, speed);
-
-                TextView textViewDistance = findViewById(R.id.textViewDistance);
-                TextView textViewSpeed = findViewById(R.id.textViewSpeed);
-                TextView textViewDuration = findViewById(R.id.textViewDuration);
-
-                textViewDistance.setText("Distância: " + String.format("%.2f km", distance));
-                textViewSpeed.setText("Velocidade Ideal: " + String.format("%.2f km/h", speed));
-                textViewDuration.setText("Tempo Estimado: " + formatDuration(duration));
-            }
-
-            @Override
-            public void onDirectionsFailure(String errorMessage) {
-                Toast.makeText(MainActivity.this, "Falha ao obter a rota: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -197,35 +263,52 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap = map;
     }
 
-    private double calculateDistance(List<LatLng> points) {
-        double distance = 0;
-        for (int i = 0; i < points.size() - 1; i++) {
-            LatLng point1 = points.get(i);
-            LatLng point2 = points.get(i + 1);
-            distance += SphericalUtil.computeDistanceBetween(point1, point2);
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(editTextDeparture.getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(editTextDestination.getWindowToken(), 0);
         }
-        return distance / 1000;
     }
 
-    private double calculateSpeed(double distance) {
-        //Implementar logica para pegar a velocidade das vias
-        return 100;
+    private void changeVeiculo() {
+        // Exibir um diálogo de seleção do veículo para o usuário
+        // O usuário pode selecionar entre as opções "Moto", "Carro" e "Caminhão"
+
+        // Exemplo de implementação básica do diálogo de seleção de veículo:
+        String[] veiculos = {"Moto", "Carro", "Caminhão"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Selecione o veículo");
+        builder.setItems(veiculos, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        currentVeiculo = new Moto();
+                        break;
+                    case 1:
+                        currentVeiculo = new Carro();
+                        break;
+                    case 2:
+                        currentVeiculo = new Caminhao();
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 
-    private double calculateDuration(double distance, double speed) {
-        return distance / speed;
-    }
-
-    private String formatDuration(double duration) {
-        int hours = (int) duration;
-        int minutes = (int) ((duration - hours) * 60);
-
-        String formattedDuration = "";
-        if (hours > 0) {
-            formattedDuration += hours + "h ";
-        }
-        formattedDuration += minutes + "min";
-
-        return formattedDuration;
+    private void showVehicleInfo(Veiculo veiculo) {
+        // Exemplo de implementação básica do diálogo de seleção de veículo:
+        String[] infoVehicle = {veiculo.getInfo()};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Informacoes do Veiculo");
+        builder.setItems(infoVehicle, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.show();
     }
 }

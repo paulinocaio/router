@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:apiKey="AIzaSyDvgG9_ldNWvY0Or4e3Iy4WQUd_AWIrV5c"
         android:clickable="true"
-        android:enabled="true" />
+        android:enabled="true"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/textViewAppName"
@@ -22,7 +23,7 @@
         android:fontFamily="@font/font"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="ROUTER"
+        android:text="@string/router"
         android:textColor="#8A2BE2"
         android:textSize="36sp"
         android:textStyle="bold" />
@@ -61,7 +62,6 @@
         android:background="@drawable/custom_edittext_background"
         tools:ignore="RtlSymmetry" />
 
-
     <EditText
         android:id="@+id/editTextDeparture"
         android:layout_width="match_parent"
@@ -86,58 +86,27 @@
         android:layout_marginBottom="6dp"
         android:text="@string/tra_ar_rota" />
 
-
-    <TextView
-        android:id="@+id/textViewDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/editTextDeparture"
-        android:layout_marginEnd="144dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/custom_edittext_background2"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:text="Distância: "
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/textViewSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/textViewDistance"
-        android:layout_marginEnd="144dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/custom_edittext_background2"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:text="Velocidade Ideal: "
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/textViewDuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/textViewSpeed"
-        android:layout_marginEnd="144dp"
-        android:layout_marginBottom="1dp"
-        android:background="@drawable/custom_edittext_background2"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:text="Tempo Estimado: "
-        android:textSize="16sp" />
-
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonMudarVeiculo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/editTextDeparture"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
-        android:text="Mudar Veículo"
-        android:textSize="10sp" />
+        android:text="@string/mudar_veiculo"
+        android:textSize="10sp"
+        tools:ignore="SmallSp" />
+
+    <Button
+        android:id="@+id/buttonGetInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/editTextDeparture"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="290dp"
+        android:layout_marginBottom="-1dp"
+        android:text="Informações"
+        android:textSize="10sp"
+        tools:ignore="SmallSp" />
 
 </RelativeLayout>
-

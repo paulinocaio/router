@@ -88,7 +88,6 @@ public class DirectionsApiClient {
                         JSONObject polylineObject = routeObject.getJSONObject("overview_polyline");
                         String encodedPolyline = polylineObject.getString("points");
                         List<LatLng> points = PolyUtil.decode(encodedPolyline);
-
                         callback.onDirectionsReady(points);
                     } else {
                         String errorMessage = jsonObject.getString("error_message");
